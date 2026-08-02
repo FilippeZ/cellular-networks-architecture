@@ -1,107 +1,97 @@
-# 📡 Cellular Networks Architecture — 4G Handover Simulation for Mission-Critical IoT
+# 📡 Cellular Networks Architecture — Intelligent 4G Handover Simulation
 
-Evaluating cell handover reliability in 4G LTE networks through algorithmic simulation, with a focus on continuous connectivity for remote patient monitoring systems.
+Advancing from static rule-based to **ML-driven predictive handover** for mission-critical healthcare IoT, featuring a full **Explainable AI (XAI)** transparency layer and an **Interactive Vite+React Real-Time 2D Dashboard**.
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Jupyter Notebook](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
-[![4G LTE](https://img.shields.io/badge/Network-4G%20LTE-green.svg)](#)
-[![OFDMA/MIMO](https://img.shields.io/badge/PHY-OFDMA%20%2F%20MIMO-purple.svg)](#)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![React 18](https://img.shields.io/badge/React-18-61DAFB.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF.svg)](https://vitejs.dev/)
+[![Flask](https://img.shields.io/badge/Flask-3.1-000000.svg)](https://flask.palletsprojects.com/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00.svg)](https://www.tensorflow.org/)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.x-F7931E.svg)](https://scikit-learn.org/)
+[![XAI SHAP](https://img.shields.io/badge/XAI-SHAP-brightgreen.svg)](https://shap.readthedocs.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
 ## 📋 Overview
 
-**Cellular Networks Architecture** is a simulation-driven project that models and evaluates handover algorithms in 4G LTE-abstracted networks. The simulation tests whether a mobile network can maintain **continuous, stable connectivity** for User Equipment (UE) — such as patients equipped with wearable health devices transmitting vital signs — as they traverse across multiple overlapping cell coverage areas.
+**Cellular Networks Architecture** is an advanced simulation and engineering project designed to model, evaluate, and visualize network handover algorithms in 4G LTE-abstracted cellular environments.
 
-The project implements three distinct handover decision algorithms, tunes them with real-world-inspired parameters (hysteresis, thresholds, cost penalties), and measures Key Performance Indicators (KPIs) like **Handover Failure Rate (HFR)** and **Call Dropping Probability (CDP)**.
+The project addresses the critical challenge of **zero-data-loss connectivity for mobile healthcare IoT** — such as ambulatory patients equipped with medical wearables transmitting continuous vitals (Heart Rate, Blood Pressure, SpO₂).
 
-## 🎯 The Problem
-
-Mobile connectivity in mission-critical IoT (e.g., healthcare telemetry) faces unique challenges:
-
-* **🔴 Data Loss Risk:** A failed handover during patient monitoring can mean lost vital signs — heart rate, blood pressure, SpO₂ — at a critical moment.
-* **🟠 Ping-Pong Effect:** Without proper hysteresis, a UE oscillates rapidly between two base stations, degrading Quality of Service (QoS) and draining battery life.
-* **🟠 Network Congestion:** Connecting to the strongest signal doesn't guarantee resources. A highly loaded cell may offer worse throughput than a weaker, less congested one.
-* **🟡 Suboptimal Handover Decisions:** Naive signal-strength-only algorithms fail in dense urban or multi-cell environments where load balancing is critical.
-
-## ✅ The Solution
-
-This simulation evaluates three handover strategies to find the optimal balance between signal quality, network load, and connection stability:
-
-| Algorithm | Decision Logic | Key Advantage | Weakness |
-| :--- | :--- | :--- | :--- |
-| **📶 RSSI-based** | Connect to the strongest signal (with hysteresis) | Simple, fast decisions | Ignores network load |
-| **📊 Threshold-based** | Stay connected if signal > minimum threshold | Reduces unnecessary handovers | May keep a degrading connection |
-| **💰 Cost-based** | Minimize composite cost (signal + load + distance) | Holistic, load-aware optimization | Higher computational overhead |
+The platform provides a dual-interface architecture:
+1. **🧠 Python ML Research Suite (`notebooks/4G_Handover_ML.ipynb`)**: Offline model training, SHAP feature attributions, loss curves, confusion matrices, and academic reporting.
+2. **🌐 Interactive React Dashboard (`dashboard/`)**: A real-time 2D HTML5 Canvas web dashboard with live parallel execution of all 6 algorithms, KPI sparklines, and interactive XAI clinical audit inspection.
 
 ---
 
-## 🏗️ Architecture & Network Model
+## 🚀 Key Features
 
-The simulation abstracts the 4G LTE physical layer (OFDMA/MIMO/SC-FDMA) to focus on the algorithmic decision-making layer:
+### 1. 🤖 6 Handover Algorithms (Static vs. ML)
+- **📶 RSSI-based (Baseline)**: Connects to the strongest current signal with a 5% hysteresis margin.
+- **📊 Threshold-based (Baseline)**: Maintains current connection until signal drops below minimum quality threshold.
+- **💰 Cost-based (Baseline)**: Minimizes a multi-objective cost function balancing distance, cell load, and switching penalties.
+- **🔮 BiLSTM Predictive (ML)**: Time-series deep neural network forecasting future RSSI trends over a 10-step window to trigger **proactive handovers** before signal degradation occurs.
+- **🌲 Random Forest (ML)**: Supervised classification model trained on oracle decision labels, providing fast and highly interpretable feature importances.
+- **🎮 Deep Q-Network (DQN RL)**: Reinforcement learning agent using shaped rewards tailored for healthcare IoT (data loss penalties, medical alert priority, ping-pong avoidance).
+
+### 2. 🔍 Explainable AI (XAI) Layer
+- **SHAP Feature Attribution**: Quantifies exact positive and negative contributions of signal trends, cell loads, distances, and UE velocities for each decision.
+- **NLP Clinical Audit Reports**: Generates human-readable, regulatory-compliant explanations for every handover.
+- **Medical Alert Prioritization**: Automatically prioritizes link stability and zero-data-loss routing during critical patient vital sign alerts.
+
+### 3. 💻 Interactive Web Dashboard (`dashboard/`)
+- **Real-Time 2D Canvas Visualization**: Live map of Base Stations (eNodeBs) with dynamic load meters, moving UEs (patient wearables), signal quality links, and pulsating alert rings.
+- **Dual Execution Engine**:
+  - **Pure-JS Engine**: Ultra-fast synchronous execution (60 FPS, < 1ms/step) for zero-lag UI interaction.
+  - **Python REST API Server (`server.py`)**: Connects the UI directly to live TensorFlow/Keras & SHAP Python model inference endpoints (`http://127.0.0.1:5000/api`).
+- **Live Comparison Mode**: Parallel execution view comparing all 6 algorithms side-by-side with real-time KPI bar charts.
+- **XAI Inspector**: Clickable log of historical handover events showing confidence scores, rationale, and SHAP feature bars.
+
+---
+
+## 🏗️ System Architecture
 
 ```text
-┌─────────────────────────────────────────────────────┐
-│                  4G LTE Network Model               │
-│                                                     │
-│  ┌───────────┐  ┌───────────┐  ┌───────────┐       │
-│  │    BS₁    │  │    BS₂    │  │    BSₙ    │       │
-│  │ (eNodeB)  │  │ (eNodeB)  │  │ (eNodeB)  │       │
-│  └─────┬─────┘  └─────┬─────┘  └─────┬─────┘       │
-│        │              │              │              │
-│  ══════╪══════════════╪══════════════╪══════════    │
-│        │    Overlapping Coverage Areas│              │
-│  ──────┼──────────────┼──────────────┼──────────    │
-│        │              │              │              │
-│  ┌─────┴──────────────┴──────────────┴─────┐        │
-│  │         Handover Decision Engine         │        │
-│  │  ┌──────────┬────────────┬────────────┐  │        │
-│  │  │  RSSI    │ Threshold  │   Cost     │  │        │
-│  │  │Algorithm │ Algorithm  │ Algorithm  │  │        │
-│  │  └──────────┴────────────┴────────────┘  │        │
-│  └──────────────────┬───────────────────────┘        │
-│                     │                                │
-│  ┌──────────────────┴───────────────────────┐        │
-│  │          User Equipment (UE)              │        │
-│  │   📱 Patient Wearable (HR, BP, SpO₂)     │        │
-│  │   → Random Walk / Predefined Path        │        │
-│  └───────────────────────────────────────────┘        │
-│                                                     │
-│  ┌──────────────────────────────────────────┐        │
-│  │           KPI Evaluation Layer            │        │
-│  │  • Handover Failure Rate (HFR)           │        │
-│  │  • Call Dropping Probability (CDP)        │        │
-│  │  • Traffic Channel Congestion             │        │
-│  └──────────────────────────────────────────┘        │
-└─────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        CELLULAR NETWORKS ARCHITECTURE PLATFORM                         │
+│                                                                                        │
+│  ┌──────────────────────────────────────────────────────────────────────────────────┐  │
+│  │                            WEB DASHBOARD (REACT + CANVAS)                        │  │
+│  │  • Real-Time 2D Canvas Topology Map   • KPI Sparklines & Radar Comparison Bar    │  │
+│  │  • Interactive XAI Audit Inspector    • 0.5× to 8× Playback Controls             │  │
+│  └──────────────────────────────────────────┬───────────────────────────────────────┘  │
+│                                             │                                          │
+│                      ┌──────────────────────┴──────────────────────┐                   │
+│                      │                                             │                   │
+│                      ▼                                             ▼                   │
+│  ┌──────────────────────────────────────┐     ┌─────────────────────────────────────┐  │
+│  │    PURE-JS HIGH PERFORMANCE ENGINE   │     │    PYTHON FLASK REST API BACKEND     │  │
+│  │  • Instant 60 FPS simulation tick    │     │  • Live TensorFlow / Keras BiLSTM   │  │
+│  │  • Zero-lag client-side fallback     │     │  • scikit-learn Random Forest       │  │
+│  │  • Synchronous state calculation     │     │  • SHAP TreeExplainer API Engine    │  │
+│  └──────────────────────────────────────┘     └─────────────────────────────────────┘  │
+│                                                                                        │
+│  ┌──────────────────────────────────────────────────────────────────────────────────┐  │
+│  │                        PY-RESEARCH SUITE (JUPYTER NOTEBOOKS)                     │  │
+│  │  • Data Generation (Oracle)     • Model Training (BiLSTM, RF, DQN)               │  │
+│  │  • SHAP Attribution Analysis    • KPI Evaluation & Matplotlib Dashboards        │  │
+│  └──────────────────────────────────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-
-### Handover Types Modeled
-
-* **Horizontal Handoffs (Intra-technology):** Transitions between homogeneous 4G access points — the primary focus of the simulation.
-* **Vertical Handoffs (Inter-technology):** Transitions between heterogeneous networks (e.g., WLAN ↔ 4G/GPRS) — explored as a challenge analysis for seamless mobility.
 
 ---
 
-## ⚙️ Simulation Parameters
+## 📊 Handover Algorithm Comparison
 
-The simulation tunes the following parameters to mimic real-world network physics:
-
-| Parameter | Value | Purpose |
-| :--- | :--- | :--- |
-| **Hysteresis Margin** | 5% (0.05) | Prevents the **ping-pong effect** — UE switches only if new signal is ≥5% stronger |
-| **Signal Threshold** | 0.3 | Minimum acceptable signal strength; UE stays connected if above this |
-| **Cost Penalty** | 50 units | Discourages frequent base station switching in the cost-based algorithm |
-| **Signal Fluctuation** | $\mathcal{N}(0, 0.002)$ | Random noise (normal distribution) simulating environmental obstacles & interference |
-| **Handover Delay** | $0.2 + \min\left(\frac{\text{cost}}{100}, 1.0\right)$ | Fixed synchronization delay + variable delay proportional to connection cost |
-| **Base Station Deployment** | Grid / Random | Uniform grid or randomized positioning for coverage overlap analysis |
-
-### Signal Strength Model
-
-Signal strength (SNR) is calculated as an inverse function of the Euclidean distance between UE and Base Station, with injected Gaussian noise:
-
-> $\text{SNR}(d) = \frac{1}{d(UE, BS)} + \epsilon, \quad \epsilon \sim \mathcal{N}(0, 0.002)$
+| Algorithm | Type | Strategy / Model | Key Advantage | Proactive? |
+| :--- | :--- | :--- | :--- | :---: |
+| **📶 RSSI** | Static | Strongest current signal + 5% hysteresis | Simple, fast execution | ❌ |
+| **📊 Threshold** | Static | Retain connection until RSSI < 18 units | Reduces unnecessary handovers | ❌ |
+| **💰 Cost-Based** | Static | Min `(dist × load × 5) / RSSI + penalty` | Load-aware multi-objective | ❌ |
+| **🔮 BiLSTM** | ML | 2× BiLSTM (128→64 units), 10-step window | **Forecasts RSSI trend; zero data loss** | ✅ |
+| **🌲 Random Forest** | ML | 100 Trees, max_depth=12 classifier | Fast, explainable, high precision | ✅ |
+| **🎮 DQN RL** | ML | Q-learning with healthcare reward shaping | **Self-adapts** to network congestion | ✅ |
 
 ---
 
@@ -109,105 +99,116 @@ Signal strength (SNR) is calculated as an inverse function of the Euclidean dist
 
 ```text
 cellular-networks-architecture/
-├── notebooks/                             # 🧠 Source code & simulation
-│   └── 4G_Handover_Simulation.ipynb       # Primary Jupyter simulation
-├── docs/                                  # 📋 Documentation & reports
+├── dashboard/                             # 🌐 Vite + React Web Application
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── NetworkCanvas.jsx          # 2D Canvas renderer (BS, UE, alerts)
+│   │   │   ├── KPIPanel.jsx               # KPI card with sparklines
+│   │   │   ├── XAIPanel.jsx               # SHAP feature bars & rationale card
+│   │   │   ├── AlgoSelector.jsx           # Algorithm picker grid
+│   │   │   └── CompareBar.jsx             # Live side-by-side KPI comparison
+│   │   ├── simulation.js                  # Core simulation engine & API bridge
+│   │   ├── App.jsx                        # Main React dashboard layout
+│   │   ├── main.jsx                       # React entry point
+│   │   └── index.css                      # Global dark glassmorphism theme
+│   ├── index.html                         # HTML template
+│   ├── vite.config.js                     # Vite configuration
+│   └── package.json                       # Node dependencies
+├── notebooks/                             # 🧠 Jupyter Research Notebooks
+│   ├── 4G_Handover_Simulation.ipynb       # Static baselines simulation
+│   └── 4G_Handover_ML.ipynb              # ML models (LSTM, RF, DQN) + SHAP XAI
+├── models/                                # 💾 Saved ML Model Weights
+│   ├── rf_model.joblib                    # Trained Random Forest classifier
+│   ├── rf_scaler.joblib                   # Feature StandardScaler
+│   └── lstm_model.h5                      # Keras BiLSTM model
+├── docs/                                  # 📋 Project Documentation
 │   ├── simulation_report.docx             # Detailed technical report (Greek)
-│   └── simulation_presentation.pptx       # Summary presentation slides (Greek)
-├── README.md                              # This file
-├── LICENSE                                # MIT License
-└── .gitignore                             # Python/Jupyter ignores
+│   └── simulation_presentation.pptx       # Project summary presentation
+├── map/                                   # 🗺️ Geospatial Folium Maps
+│   ├── sim.py                             # Map generation script
+│   └── ue_bs_custom_icon_map.html         # Interactive map HTML
+├── server.py                              # 🐍 Python Flask REST API Server
+├── README.md                              # Project documentation
+└── LICENSE                                # MIT License
 ```
 
-## 🚀 Quick Start
+---
 
-### 1. Clone & Install
+## ⚡ Quick Start & Installation
 
-```bash
-git clone https://github.com/FilippeZ/cellular-networks-architecture.git
-cd cellular-networks-architecture
-pip install jupyter numpy matplotlib
+### Option 1: Launch the Interactive Web Dashboard
+
+1. **Install Node.js dependencies**:
+   ```bash
+   cd dashboard
+   npm install
+   ```
+
+2. **Start the Vite Development Server**:
+   ```bash
+   npm run dev
+   ```
+   Open your browser at **[http://127.0.0.1:3000/](http://127.0.0.1:3000/)** (or `http://localhost:3000/`).
+
+3. *(Optional)* **Launch Python ML Backend Server**:
+   To run live Python TensorFlow & SHAP inference for the dashboard:
+   ```bash
+   # In the root folder
+   pip install flask flask-cors tensorflow scikit-learn shap joblib
+   python server.py
+   ```
+   The backend server runs on `http://127.0.0.1:5000`.
+
+---
+
+### Option 2: Run Jupyter Notebooks (Model Training & Research)
+
+1. **Install Python dependencies**:
+   ```bash
+   pip install jupyter numpy matplotlib pandas scikit-learn seaborn tensorflow shap
+   ```
+
+2. **Launch Jupyter**:
+   ```bash
+   jupyter notebook notebooks/4G_Handover_ML.ipynb
+   ```
+   Execute cells sequentially to train the models, view training curves, generate SHAP feature attributions, and export model weights.
+
+---
+
+## 🔍 Explainable AI (XAI) Audit Report Sample
+
+Every handover decision generates an auditable clinical report:
+
+```text
+╔══════════════════════════════════════════════════════════════════════════╗
+║  🔍 XAI HANDOVER DECISION REPORT — Step 147                              ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  Handover: BS2 → BS3                    Model Confidence: 91%          ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  RATIONALE                                                               ║
+║  ▶ Target BS3 signal is rising (+0.31/step)                              ║
+║  ▶ Current BS2 signal declining (-0.82/step)                             ║
+║  ▶ BS3 cell load is low (23%)                                            ║
+║  ▶ ⚠️ MEDICAL ALERT: Monitored vitals critical — zero loss prioritized   ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  SHAP FEATURE ATTRIBUTION                                                ║
+║  • BS3_rssi_trend      : +0.1823  [===================] (Positive)     ║
+║  • BS2_rssi_avg        : -0.1204  [==============     ] (Negative)     ║
+║  • BS3_load            : +0.0891  [=========          ] (Positive)     ║
+║  • Distance_to_BS3     : +0.0654  [=======            ] (Positive)     ║
+║  • velocity_x          : +0.0312  [====               ] (Positive)     ║
+╚══════════════════════════════════════════════════════════════════════════╝
 ```
 
-### 2. Run the Simulation
-
-```bash
-jupyter notebook notebooks/4G_Handover_Simulation.ipynb
-```
-
-### 3. Explore
-
-Execute cells sequentially to:
-
-| Step | What Happens |
-| :--- | :--- |
-| **Cell Deployment** | Base stations placed on grid or randomly |
-| **UE Mobility** | Patient device follows a random walk across cells |
-| **Handover Execution** | RSSI / Threshold / Cost algorithms compete |
-| **KPI Analysis** | HFR, CDP, and congestion metrics computed |
-| **Visualization** | Signal strength maps, handover events, path traces |
-
 ---
-
-## 📊 Key Performance Indicators (KPIs)
-
-The simulation evaluates network reliability through:
-
-| KPI | What It Measures | Why It Matters |
-| :--- | :--- | :--- |
-| **Handover Failure Rate (HFR)** | % of failed handover attempts | Direct indicator of connectivity gaps |
-| **Call Dropping Probability (CDP)** | Probability of losing an active connection | Critical for real-time health telemetry |
-| **Traffic Channel Congestion** | Resource utilization per cell | Identifies overloaded base stations |
-| **Ping-Pong Count** | Rapid back-and-forth handovers | Measures algorithm stability |
-
----
-
-## 🔬 Algorithm Deep Dive
-
-### 📶 RSSI-based Handover
-The UE continuously monitors the Received Signal Strength Indicator from all reachable base stations. A handover is triggered when a neighboring cell's RSSI exceeds the current cell's RSSI by the **hysteresis margin** (5%), preventing oscillations while ensuring connection to the optimal signal.
-
-### 📊 Threshold-based Handover
-The UE maintains its current connection as long as the signal remains above the **minimum threshold** (0.3). A handover is initiated only when the signal drops below this limit, significantly reducing unnecessary handover events at the expense of occasionally maintaining a degrading connection.
-
-### 💰 Cost-based Handover
-A holistic algorithm that computes the **total connection cost** by weighing:
-- **Signal strength** (inverse of distance)
-- **Network load** (current traffic on the target BS)
-- **Switching penalty** (50 units to discourage frequent changes)
-
-The UE always selects the base station with the **minimum total cost**, achieving load-aware optimization that balances signal quality with resource availability.
-
----
-
-## 🏥 Application Context: Remote Patient Monitoring
-
-This simulation is evaluated in the context of **healthcare IoT**, where a patient wearing biosensors (heart rate, blood pressure, SpO₂) moves through a 4G coverage area. The critical requirement is **zero data loss** during base station transitions — a failed handover could mean missed vital sign alerts.
-
-The simulation verifies:
-- ✅ Continuous connectivity across cell boundaries
-- ✅ Minimal handover latency for real-time data streams
-- ✅ Load-balanced resource allocation to prevent congestion
-- ✅ Resilience against signal fluctuations in urban environments
-
----
-
-## 🛠️ Technologies
-
-| Component | Technology |
-| :--- | :--- |
-| **Language** | Python 3.9+ |
-| **Simulation** | Jupyter Notebook |
-| **Computation** | NumPy |
-| **Visualization** | Matplotlib |
-| **Network Model** | Custom OOP (Network, BaseStation, UE classes) |
-| **Signal Model** | Euclidean distance + Gaussian noise |
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ## 👤 Author
 
-**Filippos-Paraskevas Zygouris**
-[GitHub](https://github.com/FilippeZ) | University of Patras — Department of Computer Engineering & Informatics
+**Filippos-Paraskevas Zygouris**  
+[GitHub Profile](https://github.com/FilippeZ)  
+University of Patras — Department of Computer Engineering & Informatics
