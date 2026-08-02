@@ -16,56 +16,67 @@ Advancing from static rule-based to **ML-driven predictive handover** for missio
 
 ## 📋 Executive Summary
 
-**Cellular Networks Architecture** is an end-to-end simulation framework for evaluating, optimizing, and deploying **Intelligent Machine Learning Handover Algorithms** in 4G LTE cell topologies. 
+**Cellular Networks Architecture** is a complete, simulation-driven framework designed to model, analyze, and optimize base station handover (HO) decision-making in 4G LTE mobile networks. 
 
-Traditional mobile networks utilize static, threshold-based or RSSI-driven handover algorithms. While computationally lightweight, these static rules react **after** signal degradation occurs, resulting in packet drops, ping-pong transitions, and cell congestion. In mission-critical Internet of Things (IoT) applications — such as wireless patient vital sign monitoring — even brief connectivity interruptions pose significant health risks.
+Traditional cellular infrastructure relies on static, drop-reactive algorithms such as RSSI or signal threshold triggers. While computationally trivial, these classical methods suffer from **reactive decision lag**, initiating cell migration only *after* signal quality has degraded. In high-density environments or mission-critical applications — such as continuous patient telemetry monitoring — reactive handovers result in severe packet loss, ping-pong oscillations, and network congestion.
 
 This project introduces a **two-layer intelligent handover architecture**:
-1. **Predictive ML Handover Engine:** Combines **BiLSTM time-series forecasting**, **Random Forest classification**, and **Deep Q-Network (DQN) Reinforcement Learning** to anticipate signal drop trajectories and trigger handovers proactively before data loss occurs.
-2. **Explainable AI (XAI) & Clinical Audit Layer:** Uses **SHAP (SHapley Additive exPlanations)** to provide transparent, auditable, human-readable explanations for every automated cell migration.
+1. **Predictive ML Handover Engine:** Leverages **BiLSTM sequence forecasting**, **Random Forest classification**, and **Deep Q-Network (DQN) Reinforcement Learning** to anticipate signal drop trajectories and execute handovers proactively before data loss occurs.
+2. **Explainable AI (XAI) & Clinical Decision Support Layer:** Integrates **SHAP (SHapley Additive exPlanations)** to provide auditable, real-time, human-readable explanations for every automated handover decision.
 
 ---
 
-## 🏥 Healthcare IoT Telemetry Context
+## 🏆 Project Showcase — Live Application Screenshots
 
-In the core simulation scenario, a moving patient wears 4G-enabled wireless bio-sensors transmitting real-time vital signs to a central clinical monitoring center:
+### 🔮 1. LSTM Proactive Winner Showcase (Live App Dashboard)
+The screenshot below demonstrates the live Vite + React 2D Canvas Web Dashboard running the **BiLSTM Predictive Engine**. It highlights the model as the **Proactive Winner**, maintaining network connectivity with an impressive **2.45% CDP** and only **71 total handovers** across the simulation trajectory.
 
-- **Heart Rate (HR):** Normal $60\text{--}100\text{ bpm}$, telemetry bounds $40\text{--}200\text{ bpm}$.
-- **Blood Pressure (BP):** Normal $90/60\text{--}120/80\text{ mmHg}$, telemetry bounds $70\text{--}200\text{ mmHg}$.
-- **Oxygen Saturation ($\text{SpO}_2$):** Normal $95\text{--}100\%$, telemetry bounds $80\text{--}100\%$.
+![LSTM App Screenshot - Proactive Winner](docs/images/app_lstm_proactive_winner.jpg)
 
-### ⚠️ Medical Alert Condition
-A medical alert is triggered whenever vitals violate safety thresholds:
+*Figure 1: Interactive 2D Canvas Dashboard running the BiLSTM algorithm, showcasing real-time cell coverage visualization, smooth user trajectory tracking, and the 2.45% CDP metric highlight.*
+
+---
+
+## 🏥 Mission-Critical Healthcare IoT Telemetry Context
+
+The simulation centers on a mobile patient equipped with 4G-connected wearable biosensors transmitting continuous medical telemetry to a hospital monitoring facility:
+
+- **Heart Rate (HR):** Normal $60\text{--}100\text{ bpm}$, monitoring range $40\text{--}200\text{ bpm}$.
+- **Blood Pressure (BP):** Normal $90/60\text{--}120/80\text{ mmHg}$, monitoring range $70\text{--}200\text{ mmHg}$.
+- **Oxygen Saturation ($\text{SpO}_2$):** Normal $95\text{--}100\%$, monitoring range $80\text{--}100\%$.
+
+### ⚠️ Medical Alert Condition Formula
+A medical alert is dynamically triggered whenever a patient's vitals breach safety parameters:
 $$\text{MedicalAlert} = (\text{SpO}_2 < 92\%) \lor (\text{HR} < 45\text{ bpm}) \lor (\text{HR} > 150\text{ bpm}) \lor (\text{BP} > 180\text{ mmHg})$$
 
-When an alert is active, the ML Handover Engine prioritizes **Zero Data Loss ($0\text{ CDP}$)** and maximum signal stability to ensure continuous transmission of critical medical telemetry.
+When an alert is active, the ML Engine adjusts decision boundaries to prioritize **Zero Critical Data Loss ($0\text{ CDP}$)** and maximum signal stability, ensuring that critical cardiac and oxygen telemetry streams remain uninterrupted.
 
 ---
 
 ## 📐 Signal Propagation & Network Model
 
-The simulation environment models $N_{\text{BS}} = 5$ eNodeB Base Stations and $N_{\text{UE}}$ mobile User Equipment nodes traversing a $500 \times 500\text{m}$ area.
+The simulation models $N_{\text{BS}} = 5$ eNodeB Base Stations and $N_{\text{UE}}$ mobile User Equipment nodes moving through a $500 \times 500\text{m}$ geographical area.
 
-### 📶 Received Signal Strength Indicator (RSSI) Formula
-The signal strength $S_{i}(t)$ received by a UE from base station $\text{BS}_i$ at distance $d_i(t)$ is modeled with path loss and Gaussian thermal noise:
+### 📶 Received Signal Strength Indicator (RSSI) Model
+The signal strength $S_{i}(t)$ received by a UE from base station $\text{BS}_i$ at distance $d_i(t)$ incorporates logarithmic path loss and Gaussian thermal noise:
 $$d_i(t) = \sqrt{(x_{\text{UE}}(t) - x_{\text{BS}_i})^2 + (y_{\text{UE}}(t) - y_{\text{BS}_i})^2} + \epsilon_{\text{dist}}$$
 $$S_{i}(t) = \max\left(0, \frac{P_t}{d_i(t)} + \mathcal{N}(0, \sigma^2)\right)$$
 
 Where:
 - Transmit power parameter $P_t = 80.0\text{ signal units}$.
-- Gaussian noise variance $\sigma = 0.002$.
-- Distance regularization parameter $\epsilon_{\text{dist}} = 0.1\text{m}$.
-- Coverage radius $R_{\text{cov}} = 65\text{m}$ ($120\text{m}$ in JS 2D Canvas).
+- Gaussian thermal noise variance $\sigma = 0.002$.
+- Regularization offset $\epsilon_{\text{dist}} = 0.1\text{m}$.
+- Coverage radius $R_{\text{cov}} = 65\text{m}$ ($120\text{m}$ in 2D Canvas rendering).
 
-### ⚖️ Dynamic Cell Load Model
-Each base station maintains a dynamic resource load $L_i(t) \in [0.1, 1.0]$, representing cell congestion:
+### ⚖️ Dynamic Base Station Congestion Model
+Base stations maintain dynamic cell load factors $L_i(t) \in [0.1, 1.0]$, representing real-time PRB (Physical Resource Block) usage:
 $$L_i(t+1) = \max\left(0.1, \min\left(1.0, L_i(t) + \mathcal{N}(0, 0.04^2)\right)\right)$$
 
 ---
 
 ## 📊 Section 8 Simulation Benchmark — Comprehensive Results
 
-The official simulation benchmark in `notebooks/4G_Handover_ML.ipynb` (Section 8 & 9) compares all 6 algorithms over 200 simulation steps under identical network topologies:
+The official simulation benchmark in `notebooks/4G_Handover_ML.ipynb` (Section 8 & 9) evaluates all 6 algorithms over 200 steps on identical network topologies:
 
 ### 🏆 Benchmark KPI Performance Table
 
@@ -79,9 +90,9 @@ The official simulation benchmark in `notebooks/4G_Handover_ML.ipynb` (Section 8
 | **Threshold** | **Static** | **2000** | **1510** | **75.50%** | **75.50%** | 🔴 **Severe Ping-Pong Collapse** |
 
 ### 📐 KPI Metric Definitions
-1. **Handover Failure Rate (HFR %):** Ratio of handovers occurring when signal strength is below the usable drop threshold:
+1. **Handover Failure Rate (HFR %):** Ratio of handovers executed under weak signal conditions ($S < 0.008$) resulting in packet loss:
 $$\text{HFR} = \frac{N_{\text{failed\_handovers}}}{N_{\text{total\_handovers}}} \times 100\%$$
-2. **Call Dropping Probability / Critical Data Loss (CDP %):** Ratio of critical telemetry packets dropped relative to total expected telemetry transmissions:
+2. **Call Dropping Probability / Critical Data Loss (CDP %):** Percentage of total transmitted vital sign telemetry packets lost during handovers:
 $$\text{CDP} = \frac{N_{\text{lost\_packets}}}{N_{\text{total\_steps}} \times N_{\text{UEs}}} \times 100\%$$
 
 ### 🖼️ Section 8 Comparative KPI Dashboard Plot
@@ -89,13 +100,13 @@ $$\text{CDP} = \frac{N_{\text{lost\_packets}}}{N_{\text{total\_steps}} \times N_
 
 ---
 
-## 🔬 Deep-Dive Analytical Evaluation (Section 8 Findings)
+## 🔬 In-Depth Analytical Evaluation (Section 8 Findings)
 
-### 1. 🥇 The Supremacy of BiLSTM (Proactive Time-Series Forecasting)
-The **Bidirectional LSTM** model achieved the lowest critical data packet loss (**CDP = 2.45%**, only 49 lost packets) and the fewest cell transitions (**71 handovers**).
+### 1. 🥇 The Dominance of BiLSTM (Proactive Time-Series Forecasting)
+The **Bidirectional LSTM** model is the undisputed winner of the simulation, achieving the lowest critical data packet loss (**CDP = 2.45%**, only 49 lost packets) and the fewest total cell switches (**71 handovers**).
 
-- **Architecture:** Sliding input sequence window of 10 time steps $\mathbf{X}_t \in \mathbb{R}^{10 \times 10}$, feeding into a `Bidirectional(LSTM(64))` layer followed by `Dense(32, relu)` and `Dense(5, softmax)`.
-- **Why it wins:** Instead of reacting to instant RSSI drops, the BiLSTM models signal *trajectories* $\frac{dS_i}{dt}$. It identifies which base station will remain stable in future time steps, triggering handovers 5--15 steps *before* signal degradation occurs.
+- **Architecture:** Input sequence window of 10 time steps $\mathbf{X}_t \in \mathbb{R}^{10 \times 10}$, feeding into a `Bidirectional(LSTM(64))` layer followed by `Dense(32, relu)` and `Dense(5, softmax)`.
+- **Why it wins:** Instead of reacting to instant RSSI drops, the BiLSTM models signal trajectories $\frac{dS_i}{dt}$. It identifies which base station will remain stable in future time steps, triggering handovers 5--15 steps *before* signal degradation occurs.
 
 ![LSTM Training Curves](docs/images/lstm_training_curves.png)
 
@@ -144,36 +155,20 @@ The DQN model was trained for only **20 Episodes** in the simulation. In Reinfor
 
 ---
 
-## 🔍 Explainable AI (XAI) Transparency Layer
+## 🔍 Explainable AI (XAI) Layer & Clinical Decision Support
 
-Medical regulations (IEC 62304 & FDA SaMD guidance) mandate that AI-driven decisions in healthcare software must be **auditable and explainable**.
+In regulated medical device environments, "black-box" decision-making is unacceptable. The XAI layer provides:
 
-### SHAP Feature Attribution Equation
-SHAP assigns an additive importance value $\phi_i$ to each feature $x_i$:
-$$f(x) = \phi_0 + \sum_{i=1}^{M} \phi_i(x)$$
+- **SHAP Feature Attributions:** Quantifies exact feature contributions for every single handover decision.
+- **NLP Clinical Audit Reports:** Generates human-readable, auditable decision logs.
+- **Medical Alert Context:** Automatically tags handovers triggered during critical vital sign alerts (e.g., $\text{SpO}_2 < 92\%$).
 
-The XAI layer outputs a **Clinical Audit Log** for every handover decision:
+### ⚠️ 2. DQN-RL Medical Alert & XAI Showcase (Live App Dashboard)
+The screenshot below shows the live dashboard operating under active patient medical alert conditions. The right-hand panel displays the **XAI Decision Report** featuring the prominent **"⚠️ MEDICAL ALERT ACTIVE"** banner. It explains how the ML model prioritizes signal stability and zero packet loss to safeguard patient vitals in real-time.
 
-```text
-╔══════════════════════════════════════════════════════════════════════╗
-║  XAI HANDOVER DECISION REPORT — Step 147                            ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  UE 0  |  From: BS2 → To: BS3           Model Confidence: 94.3%     ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  DECISION RATIONALE                                                  ║
-║  ▶ Target BS3 RSSI (0.02341) is improving (+0.00031/step).          ║
-║  ▶ Current BS2 RSSI was 0.00912 (declining trend).                  ║
-║  ▶ BS3 load is 0.23 (optimal capacity available).                    ║
-║  ▶ Distance to BS3: 47.3m                                            ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  TOP SHAP CONTRIBUTING FEATURES                                      ║
-║  • BS3_rssi_trend      : +0.01823  [↑ Favors Handover]               ║
-║  • BS2_rssi_avg        : -0.01204  [↓ Opposes Handover]              ║
-║  • BS3_load            : +0.00891  [↑ Favors Handover]               ║
-║  • BS3_inv_dist        : +0.00654  [↑ Favors Handover]               ║
-║  • velocity_x          : +0.00312  [↑ Favors Handover]               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+![DQN App Screenshot - Medical Alert Active XAI Report](docs/images/app_dqn_xai_medical_alert.jpg)
+
+*Figure 2: Real-time XAI Decision Support Panel showing active patient biosensing alert context (HR: 137 bpm, SpO₂: 89.2%, BP: 145 mmHg), confidence scoring (89%), and SHAP feature attribution bars.*
 
 <p align="center">
   <img src="docs/images/xai_shap_attributions.png" width="48%" alt="XAI SHAP Feature Attributions" />
@@ -253,7 +248,7 @@ cellular-networks-architecture/
 │   ├── rf_model.joblib                    # Saved Scikit-Learn Random Forest model
 │   └── rf_scaler.joblib                   # Saved StandardScaler preprocessor
 ├── docs/                                  # 📋 Documentation Assets & Generated Plots
-│   └── images/                            # Extracted plot PNG images used in README
+│   └── images/                            # Extracted plot PNG images & app screenshots used in README
 ├── server.py                              # 🐍 Flask Python ML REST API server
 ├── README.md                              # Comprehensive analytical project documentation
 └── LICENSE                                # MIT License
@@ -303,7 +298,7 @@ Open **[http://localhost:3000/](http://localhost:3000/)** in your browser to exp
 
 ## 📄 License
 
-This project is open-source and licensed under the **MIT License** — see [LICENSE](LICENSE) for full details.
+This project is open-source and licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 
 ## 👤 Author
 
