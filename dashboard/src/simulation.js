@@ -13,13 +13,23 @@ export const COVERAGE_RADIUS = 120;
 export const WINDOW_SIZE     = 10;
 
 export const ALGO_META = {
-  rssi:      { label: 'RSSI',         color: '#58a6ff', type: 'static', icon: '📶', desc: 'Always connects to strongest signal' },
-  threshold: { label: 'Threshold',    color: '#3fb950', type: 'static', icon: '📊', desc: 'Handover only when signal drops below threshold' },
-  cost:      { label: 'Cost-Based',   color: '#f0883e', type: 'static', icon: '💰', desc: 'Minimises a distance × load cost function' },
-  lstm:      { label: 'LSTM',         color: '#bc8cff', type: 'ml',     icon: '🔮', desc: 'Predicts future RSSI trend; proactive handover' },
-  rf:        { label: 'Random Forest',color: '#ff7b72', type: 'ml',     icon: '🌲', desc: 'Classifies best BS from feature vector' },
-  dqn:       { label: 'DQN-RL',       color: '#ffa657', type: 'ml',     icon: '🎮', desc: 'Reinforcement-learning reward-shaped policy' },
+  rssi:      { label: 'RSSI',         color: '#58a6ff', type: 'static', icon: '📶', desc: 'Always connects to strongest signal (38.65% CDP loss)' },
+  threshold: { label: 'Threshold',    color: '#3fb950', type: 'static', icon: '📊', desc: 'Handover when signal < drop threshold (2000 HO, 75.50% CDP)' },
+  cost:      { label: 'Cost-Based',   color: '#f0883e', type: 'static', icon: '💰', desc: 'Minimises distance × load cost (Oracle dataset baseline)' },
+  lstm:      { label: 'LSTM',         color: '#bc8cff', type: 'ml',     icon: '🔮', desc: '10-step BiLSTM sequence model (85.66% Acc, 2.45% CDP Winner)' },
+  rf:        { label: 'Random Forest',color: '#ff7b72', type: 'ml',     icon: '🌲', desc: 'Supervised classifier trained on Oracle (94.34% Acc, 8.85% CDP)' },
+  dqn:       { label: 'DQN-RL',       color: '#ffa657', type: 'ml',     icon: '🎮', desc: 'Deep Q-Network reward-shaped policy (20 Episodes early phase)' },
 };
+
+export const NOTEBOOK_BENCHMARK_RESULTS = {
+  lstm:      { algo: 'LSTM',         category: 'ML',     handovers: 71,   lostPackets: 49,   hfr: 69.01, cdp: 2.45,  accuracy: 85.66, rank: '🥇 Absolute Winner (Proactive)' },
+  rf:        { algo: 'Random Forest',category: 'ML',     handovers: 205,  lostPackets: 177,  hfr: 86.34, cdp: 8.85,  accuracy: 94.34, rank: '🥈 Supervised Classifier (94.34%)' },
+  cost:      { algo: 'Cost-Based',   category: 'Static', handovers: 218,  lostPackets: 197,  hfr: 90.37, cdp: 9.85,  accuracy: null,  rank: '🥉 Oracle Baseline' },
+  dqn:       { algo: 'DQN-RL',       category: 'ML',     handovers: 567,  lostPackets: 510,  hfr: 89.95, cdp: 25.50, accuracy: null,  rank: '⚠️ Early Policy (20 Ep.)' },
+  rssi:      { algo: 'RSSI',         category: 'Static', handovers: 806,  lostPackets: 773,  hfr: 95.91, cdp: 38.65, accuracy: null,  rank: '🔴 Blind Load-Ignorant' },
+  threshold: { algo: 'Threshold',    category: 'Static', handovers: 2000, lostPackets: 1510, hfr: 75.50, cdp: 75.50, accuracy: null,  rank: '🔴 Severe Ping-Pong Collapse' },
+};
+
 
 const BS_COLORS = ['#58a6ff','#3fb950','#f0883e','#bc8cff','#ffa657'];
 

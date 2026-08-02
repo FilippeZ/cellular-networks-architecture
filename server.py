@@ -462,6 +462,19 @@ ACTIVE_SIMS = {
 #  FLASK REST API ENDPOINTS
 # ═══════════════════════════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════════════════════════
+#  SECTION 8 NOTEBOOK SIMULATION BENCHMARK DATA
+# ═══════════════════════════════════════════════════════════════════════════
+
+NOTEBOOK_BENCHMARK_RESULTS = {
+    'lstm':      {'algo': 'LSTM',         'category': 'ML',     'handovers': 71,   'lostPackets': 49,   'hfr': 69.01, 'cdp': 2.45,  'accuracy': 85.66, 'rank': '🥇 Absolute Winner (Proactive)'},
+    'rf':        {'algo': 'Random Forest','category': 'ML',     'handovers': 205,  'lostPackets': 177,  'hfr': 86.34, 'cdp': 8.85,  'accuracy': 94.34, 'rank': '🥈 Supervised Classifier (Oracle-trained)'},
+    'cost':      {'algo': 'Cost-Based',   'category': 'Static', 'handovers': 218,  'lostPackets': 197,  'hfr': 90.37, 'cdp': 9.85,  'accuracy': None,  'rank': '🥉 Oracle Baseline'},
+    'dqn':       {'algo': 'DQN-RL',       'category': 'ML',     'handovers': 567,  'lostPackets': 510,  'hfr': 89.95, 'cdp': 25.50, 'accuracy': None,  'rank': '⚠️ Early Policy (20 Episodes)'},
+    'rssi':      {'algo': 'RSSI',         'category': 'Static', 'handovers': 806,  'lostPackets': 773,  'hfr': 95.91, 'cdp': 38.65, 'accuracy': None,  'rank': '🔴 Blind Load-Ignorant'},
+    'threshold': {'algo': 'Threshold',    'category': 'Static', 'handovers': 2000, 'lostPackets': 1510, 'hfr': 75.50, 'cdp': 75.50, 'accuracy': None,  'rank': '🔴 Severe Ping-Pong Collapse'},
+}
+
 @app.route('/api/status', methods=['GET'])
 def get_status():
     return jsonify({
@@ -469,12 +482,26 @@ def get_status():
         'backend': 'Python 3.12 Real ML Backend',
         'tf_available': TF_AVAILABLE,
         'shap_available': SHAP_AVAILABLE,
+        'notebook_dataset_samples': 15200,
+        'model_accuracies': {
+            'rf': 94.34,
+            'lstm': 85.66,
+            'dqn_episodes': 20
+        },
         'loaded_models': {
             'rf': ACTIVE_SIMS['rf'].ml_manager.rf_model is not None,
             'lstm': ACTIVE_SIMS['lstm'].ml_manager.lstm_model is not None,
             'dqn': True
         }
     })
+
+@app.route('/api/benchmark', methods=['GET'])
+def get_benchmark():
+    return jsonify({
+        'status': 'ok',
+        'benchmark': NOTEBOOK_BENCHMARK_RESULTS
+    })
+
 
 @app.route('/api/reset', methods=['POST'])
 def reset_sim():

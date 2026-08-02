@@ -151,7 +151,7 @@ export default function KPIPanel({ algo, kpis, kpiHistory, activeAlerts }) {
         <KPIItem label="Handovers" value={kpis.totalHO}          unit=""     color={meta.color} />
         <KPIItem label="HFR"       value={kpis.hfr?.toFixed(1)}  unit="%"    color={kpis.hfr > 5 ? '#ff7b72' : '#3fb950'} />
         <KPIItem label="Lost Pkts" value={kpis.totalLost}        unit=""     color={kpis.totalLost > 0 ? '#ffa657' : '#3fb950'} />
-        <KPIItem label="Avg Delay" value={kpis.avgDelay?.toFixed(2)} unit="s" color="#58a6ff" />
+        <KPIItem label="CDP"       value={kpis.cdp?.toFixed(2)}  unit="%"    color={kpis.cdp > 5 ? '#ff7b72' : '#3fb950'} />
       </div>
 
       {/* Sparklines */}
@@ -171,25 +171,30 @@ export default function KPIPanel({ algo, kpis, kpiHistory, activeAlerts }) {
         </div>
       </div>
 
-      {/* CDP */}
+      {/* Notebook Section 8 Benchmark Highlight */}
       <div style={{
         background: '#161b22',
-        border: '1px solid rgba(48,54,61,0.6)',
+        border: '1px solid rgba(56,139,253,0.3)',
         borderRadius: '8px',
         padding: '8px 10px',
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: 'column',
+        gap: '4px',
       }}>
-        <span style={{ fontSize: '10px', color: '#8b949e' }}>CDP</span>
-        <span style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: '13px',
-          fontWeight: 600,
-          color: kpis.cdp > 1 ? '#ff7b72' : '#3fb950',
-        }}>
-          {kpis.cdp?.toFixed(3)}%
-        </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '9px', textTransform: 'uppercase', color: '#58a6ff', fontWeight: 700 }}>
+            Notebook Sec 8 Benchmark
+          </span>
+          <span style={{ fontSize: '9px', color: '#8b949e', fontFamily: 'monospace' }}>200 Steps</span>
+        </div>
+        <div style={{ fontSize: '11px', fontWeight: 600, color: meta.color }}>
+          {algo === 'lstm' && '🥇 2.45% CDP (49 Lost) — Proactive Winner'}
+          {algo === 'rf' && '🥈 8.85% CDP (177 Lost) — 94.34% RF Accuracy'}
+          {algo === 'cost' && '🥉 9.85% CDP (197 Lost) — Oracle Baseline'}
+          {algo === 'dqn' && '⚠️ 25.50% CDP (510 Lost) — 20 Ep. Early Policy'}
+          {algo === 'rssi' && '🔴 38.65% CDP (773 Lost) — Load Ignorant'}
+          {algo === 'threshold' && '🔴 75.50% CDP (1510 Lost) — Ping-Pong Collapse'}
+        </div>
       </div>
 
       {/* Medical Alerts */}
@@ -206,10 +211,11 @@ export default function KPIPanel({ algo, kpis, kpiHistory, activeAlerts }) {
         }}>
           <span style={{ fontSize: '13px' }}>⚠️</span>
           <span style={{ fontSize: '10px', color: '#ff7b72', fontWeight: 600 }}>
-            {activeAlerts} Medical Alert{activeAlerts > 1 ? 's' : ''} Active
+            {activeAlerts} Medical Alert{activeAlerts > 1 ? 's' : ''} Active (Zero-Data-Loss Active)
           </span>
         </div>
       )}
     </div>
   );
 }
+

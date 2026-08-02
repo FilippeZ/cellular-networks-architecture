@@ -34,6 +34,8 @@ dashboard/dist/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+Untitled.ipynb
+
 
 # Environments
 .env

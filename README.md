@@ -1,6 +1,6 @@
 # 📡 Cellular Networks Architecture — Intelligent 4G Handover Simulation
 
-Advancing from static rule-based to **ML-driven predictive handover** for mission-critical healthcare IoT, with full **Explainable AI (XAI)** transparency layer and an **Interactive Vite React Dashboard**.
+Advancing from static rule-based to **ML-driven predictive handover** for mission-critical healthcare IoT, featuring a full **Explainable AI (XAI)** transparency layer, real-time Python TensorFlow/Scikit-Learn inference backend, and an **Interactive Vite + React 2D Web Dashboard**.
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![React 18](https://img.shields.io/badge/React-18-61DAFB.svg)](https://reactjs.org/)
@@ -11,367 +11,301 @@ Advancing from static rule-based to **ML-driven predictive handover** for missio
 [![4G LTE](https://img.shields.io/badge/Network-4G%20LTE-green.svg)](#)
 [![Machine Learning](https://img.shields.io/badge/ML-LSTM%20%7C%20RF%20%7C%20DQN-purple.svg)](#)
 [![XAI](https://img.shields.io/badge/XAI-SHAP%20%7C%20Explainable-brightgreen.svg)](#)
-[![OFDMA/MIMO](https://img.shields.io/badge/PHY-OFDMA%20%2F%20MIMO-purple.svg)](#)
 
 ---
 
-## 📋 Overview
+## 📋 Executive Summary
 
-**Cellular Networks Architecture** is a simulation-driven project that models and evaluates handover algorithms in 4G LTE-abstracted networks. The project has evolved from three static handover algorithms (RSSI, Threshold, Cost) into a full **Intelligent ML-Enhanced System** that proactively predicts and executes handovers before signal degradation occurs.
+**Cellular Networks Architecture** is an end-to-end simulation framework for evaluating, optimizing, and deploying **Intelligent Machine Learning Handover Algorithms** in 4G LTE cell topologies. 
 
-The simulation tests whether a mobile network can maintain **continuous, stable connectivity** for User Equipment (UE) — such as patients equipped with wearable health devices transmitting vital signs (HR, BP, SpO₂) — as they traverse multiple overlapping cell coverage areas.
+Traditional mobile networks utilize static, threshold-based or RSSI-driven handover algorithms. While computationally lightweight, these static rules react **after** signal degradation occurs, resulting in packet drops, ping-pong transitions, and cell congestion. In mission-critical Internet of Things (IoT) applications — such as wireless patient vital sign monitoring — even brief connectivity interruptions pose significant health risks.
 
-The system now features:
-- 🧠 **LSTM predictive handover** (time-series forecasting)
-- 🌲 **Random Forest classification** (interpretable, fast decisions)
-- 🎮 **DQN Reinforcement Learning** (self-optimizing adaptive policy)
-- 🔍 **XAI layer with SHAP** (clinical audit reports, human-readable explanations)
-- 🌐 **Interactive Vite+React Dashboard** (live 2D Canvas visualization & KPI monitoring)
+This project introduces a **two-layer intelligent handover architecture**:
+1. **Predictive ML Handover Engine:** Combines **BiLSTM time-series forecasting**, **Random Forest classification**, and **Deep Q-Network (DQN) Reinforcement Learning** to anticipate signal drop trajectories and trigger handovers proactively before data loss occurs.
+2. **Explainable AI (XAI) & Clinical Audit Layer:** Uses **SHAP (SHapley Additive exPlanations)** to provide transparent, auditable, human-readable explanations for every automated cell migration.
 
 ---
 
-## 🎯 The Problem
+## 🏥 Healthcare IoT Telemetry Context
 
-Mobile connectivity in mission-critical IoT (e.g., healthcare telemetry) faces unique challenges:
+In the core simulation scenario, a moving patient wears 4G-enabled wireless bio-sensors transmitting real-time vital signs to a central clinical monitoring center:
 
-* **🔴 Data Loss Risk:** A failed handover during patient monitoring can mean lost vital signs at a critical moment.
-* **🟠 Ping-Pong Effect:** Without proper hysteresis, a UE oscillates rapidly between two base stations.
-* **🟠 Network Congestion:** Connecting to the strongest signal doesn't guarantee resources.
-* **🟡 Reactive Decisions:** Static algorithms react *after* signal degradation — too late for zero-data-loss telemetry.
-* **🔵 Black-Box Algorithms:** ML systems without transparency are unacceptable in regulated healthcare environments.
+- **Heart Rate (HR):** Normal $60\text{--}100\text{ bpm}$, telemetry bounds $40\text{--}200\text{ bpm}$.
+- **Blood Pressure (BP):** Normal $90/60\text{--}120/80\text{ mmHg}$, telemetry bounds $70\text{--}200\text{ mmHg}$.
+- **Oxygen Saturation ($\text{SpO}_2$):** Normal $95\text{--}100\%$, telemetry bounds $80\text{--}100\%$.
 
-## ✅ The Solution — Two-Layer Intelligent System
+### ⚠️ Medical Alert Condition
+A medical alert is triggered whenever vitals violate safety thresholds:
+$$\text{MedicalAlert} = (\text{SpO}_2 < 92\%) \lor (\text{HR} < 45\text{ bpm}) \lor (\text{HR} > 150\text{ bpm}) \lor (\text{BP} > 180\text{ mmHg})$$
 
-### Layer 1: ML Handover Algorithms
-
-| Algorithm | Strategy | Key Advantage |
-| :--- | :--- | :--- |
-| **📶 RSSI-based** | Connect to strongest signal (with hysteresis) | Simple, fast decisions |
-| **📊 Threshold-based** | Stay connected if signal > minimum threshold | Reduces unnecessary handovers |
-| **💰 Cost-based** | Minimize composite cost (signal + load + distance) | Holistic, load-aware |
-| **🔮 LSTM Predictive** | Time-series forecast of future signal trajectory | **Proactive**: triggers before signal drops |
-| **🌲 Random Forest** | Supervised classification on oracle-labeled data | Fast, explainable, high accuracy |
-| **🎮 DQN RL** | Reinforcement learning with shaped healthcare reward | **Self-adaptive**: improves with experience |
-
-### Layer 2: Explainable AI (XAI)
-
-In mission-critical healthcare, "black box" decisions are unacceptable. The XAI layer provides:
-
-- **SHAP values** — quantify which features drove each handover decision
-- **NLP clinical audit reports** — human-readable explanation of every handover
-- **Medical alert context** — explains handovers linked to patient vital sign alerts
-- **Proactive vs. reactive analysis** — proves that ML acts before signal loss
+When an alert is active, the ML Handover Engine prioritizes **Zero Data Loss ($0\text{ CDP}$)** and maximum signal stability to ensure continuous transmission of critical medical telemetry.
 
 ---
 
-## 🏗️ Architecture
+## 📐 Signal Propagation & Network Model
+
+The simulation environment models $N_{\text{BS}} = 5$ eNodeB Base Stations and $N_{\text{UE}}$ mobile User Equipment nodes traversing a $500 \times 500\text{m}$ area.
+
+### 📶 Received Signal Strength Indicator (RSSI) Formula
+The signal strength $S_{i}(t)$ received by a UE from base station $\text{BS}_i$ at distance $d_i(t)$ is modeled with path loss and Gaussian thermal noise:
+$$d_i(t) = \sqrt{(x_{\text{UE}}(t) - x_{\text{BS}_i})^2 + (y_{\text{UE}}(t) - y_{\text{BS}_i})^2} + \epsilon_{\text{dist}}$$
+$$S_{i}(t) = \max\left(0, \frac{P_t}{d_i(t)} + \mathcal{N}(0, \sigma^2)\right)$$
+
+Where:
+- Transmit power parameter $P_t = 80.0\text{ signal units}$.
+- Gaussian noise variance $\sigma = 0.002$.
+- Distance regularization parameter $\epsilon_{\text{dist}} = 0.1\text{m}$.
+- Coverage radius $R_{\text{cov}} = 65\text{m}$ ($120\text{m}$ in JS 2D Canvas).
+
+### ⚖️ Dynamic Cell Load Model
+Each base station maintains a dynamic resource load $L_i(t) \in [0.1, 1.0]$, representing cell congestion:
+$$L_i(t+1) = \max\left(0.1, \min\left(1.0, L_i(t) + \mathcal{N}(0, 0.04^2)\right)\right)$$
+
+---
+
+## 📊 Section 8 Simulation Benchmark — Comprehensive Results
+
+The official simulation benchmark in `notebooks/4G_Handover_ML.ipynb` (Section 8 & 9) compares all 6 algorithms over 200 simulation steps under identical network topologies:
+
+### 🏆 Benchmark KPI Performance Table
+
+| Algorithm | Category | Total Handovers | Lost Packets (CDP Count) | HFR (%) | CDP (%) | Performance Rank & Status |
+| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
+| **LSTM** | **ML** | **71** | **49** | **69.01%** | **2.45%** | 🥇 **Absolute Winner (Proactive)** |
+| **Random Forest** | **ML** | **205** | **177** | **86.34%** | **8.85%** | 🥈 **Supervised Classifier (94.34% Acc)** |
+| **Cost** | **Static** | **218** | **197** | **90.37%** | **9.85%** | 🥉 **Oracle Baseline** |
+| **DQN RL** | **ML** | **567** | **510** | **89.95%** | **25.50%** | ⚠️ **Early Policy (20 Episodes)** |
+| **RSSI** | **Static** | **806** | **773** | **95.91%** | **38.65%** | 🔴 **Blind Load-Ignorant** |
+| **Threshold** | **Static** | **2000** | **1510** | **75.50%** | **75.50%** | 🔴 **Severe Ping-Pong Collapse** |
+
+### 📐 KPI Metric Definitions
+1. **Handover Failure Rate (HFR %):** Ratio of handovers occurring when signal strength is below the usable drop threshold:
+$$\text{HFR} = \frac{N_{\text{failed\_handovers}}}{N_{\text{total\_handovers}}} \times 100\%$$
+2. **Call Dropping Probability / Critical Data Loss (CDP %):** Ratio of critical telemetry packets dropped relative to total expected telemetry transmissions:
+$$\text{CDP} = \frac{N_{\text{lost\_packets}}}{N_{\text{total\_steps}} \times N_{\text{UEs}}} \times 100\%$$
+
+### 🖼️ Section 8 Comparative KPI Dashboard Plot
+![Comparative KPI Dashboard](docs/images/kpi_comparative_dashboard.png)
+
+---
+
+## 🔬 Deep-Dive Analytical Evaluation (Section 8 Findings)
+
+### 1. 🥇 The Supremacy of BiLSTM (Proactive Time-Series Forecasting)
+The **Bidirectional LSTM** model achieved the lowest critical data packet loss (**CDP = 2.45%**, only 49 lost packets) and the fewest cell transitions (**71 handovers**).
+
+- **Architecture:** Sliding input sequence window of 10 time steps $\mathbf{X}_t \in \mathbb{R}^{10 \times 10}$, feeding into a `Bidirectional(LSTM(64))` layer followed by `Dense(32, relu)` and `Dense(5, softmax)`.
+- **Why it wins:** Instead of reacting to instant RSSI drops, the BiLSTM models signal *trajectories* $\frac{dS_i}{dt}$. It identifies which base station will remain stable in future time steps, triggering handovers 5--15 steps *before* signal degradation occurs.
+
+![LSTM Training Curves](docs/images/lstm_training_curves.png)
+
+---
+
+### 2. 🔴 The Collapse of Static Baselines (Threshold & RSSI)
+- **Threshold-Based Collapse:** Threshold logic maintains connection until signal drops below $S_{\text{thresh}} = 0.3$. Once the UE reaches cell boundaries, RSSI oscillates rapidly around the boundary, triggering **2,000 handovers** and dropping **75.50% of critical data packets** (1,510 lost packets) due to infinite ping-ponging.
+- **RSSI-Based Inefficiency:** RSSI connects to whichever cell has the highest instant signal. Because it ignores cell load $L_i$ and user velocity $(v_x, v_y)$, it constantly hops between congested cells, dropping **38.65% of telemetry packets** (773 lost packets).
+
+<p align="center">
+  <img src="docs/images/threshold_trajectory.png" width="48%" alt="Threshold Trajectory" />
+  <img src="docs/images/rssi_trajectory.png" width="48%" alt="RSSI Trajectory" />
+</p>
+
+---
+
+### 3. 🌲 Random Forest Classifier vs. The Cost Oracle
+To train the Random Forest model, the Cost-based algorithm served as an **Oracle**, generating a training dataset of **15,200 labeled samples** from 5 simulation episodes.
+
+- **Feature Vector ($\mathbf{x} \in \mathbb{R}^{28}$):** For each base station $\text{BS}_i$: `[RSSI_now, RSSI_avg, RSSI_trend, BS_load, Inv_Dist]`, plus global velocity `[v_x, v_y, HO_count]`.
+- **Random Forest Performance:** Achieving **94.34% test accuracy**, the RF model successfully learned and generalized the Oracle's cost function, slightly outperforming the original Cost algorithm (**205 handovers vs 218**, **8.85% CDP vs 9.85% CDP**).
+- **SHAP Feature Importance:** Feature attribution showed that Base Station Loads (`BS1_load`, `BS3_load`) contribute over $42\%$ of decision weight, preventing cell congestion.
+
+<p align="center">
+  <img src="docs/images/cost_trajectory.png" width="48%" alt="Cost Trajectory" />
+  <img src="docs/images/rf_feature_importance.png" width="48%" alt="Random Forest Feature Importance" />
+</p>
+
+---
+
+### 4. ⚠️ Reinforcement Learning Analysis (DQN Underperformance)
+The **Deep Q-Network (DQN)** agent recorded a **25.50% CDP** (510 lost packets) and **567 handovers**.
+
+#### 🎯 Healthcare Reward Function Design
+$$R(s, a) = R_{\text{signal}} + R_{\text{proactive}} + P_{\text{loss}} + P_{\text{ping-pong}} + R_{\text{vitals}}$$
+Where:
+- $R_{\text{signal}} = +2.0$ if $S_{\text{target}} > 0.3$.
+- $R_{\text{proactive}} = +0.5$ for proactive cell transitions.
+- $P_{\text{loss}} = -5.0$ penalty for packet loss risk ($S < 0.01$).
+- $P_{\text{ping-pong}} = -1.0$ penalty for unnecessary cell switches.
+
+#### 💡 Root Cause of High CDP
+The DQN model was trained for only **20 Episodes** in the simulation. In Reinforcement Learning, Q-learning convergence requires thousands of episodes. At episode 20, the exploration rate $\epsilon$ was still at $0.050$, indicating the agent was actively taking exploratory actions rather than fully exploiting an optimal Q-policy.
+
+![DQN Training Rewards](docs/images/dqn_training_rewards.png)
+
+---
+
+## 🔍 Explainable AI (XAI) Transparency Layer
+
+Medical regulations (IEC 62304 & FDA SaMD guidance) mandate that AI-driven decisions in healthcare software must be **auditable and explainable**.
+
+### SHAP Feature Attribution Equation
+SHAP assigns an additive importance value $\phi_i$ to each feature $x_i$:
+$$f(x) = \phi_0 + \sum_{i=1}^{M} \phi_i(x)$$
+
+The XAI layer outputs a **Clinical Audit Log** for every handover decision:
 
 ```text
-┌─────────────────────────────────────────────────────────────────┐
-│              Intelligent 4G LTE Network System                  │
-│                                                                 │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
-│  │     BS₁     │  │     BS₂     │  │     BSₙ     │            │
-│  │  (eNodeB)   │  │  (eNodeB)   │  │  (eNodeB)   │            │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘            │
-│         └─────────────── RSSI/Load history ──────────────┐     │
-│                                                          ↓     │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │               ML Handover Decision Engine                │  │
-│  │  ┌──────────┬──────────────┬────────────┬────────────┐   │  │
-│  │  │  RSSI    │  Threshold   │   Cost     │    ML      │   │  │
-│  │  │(baseline)│  (baseline)  │ (baseline) │  Models    │   │  │
-│  │  └──────────┴──────────────┴────────────┴─────┬──────┘   │  │
-│  │                                               ↓          │  │
-│  │  ┌────────────────────────────────────────────────────┐  │  │
-│  │  │             ML Models                              │  │  │
-│  │  │  ┌──────────┐  ┌──────────────┐  ┌─────────────┐  │  │  │
-│  │  │  │   LSTM   │  │    Random    │  │     DQN     │  │  │  │
-│  │  │  │ (RSSI    │  │    Forest    │  │     RL      │  │  │  │
-│  │  │  │ forecast)│  │ (classifier) │  │  (adaptive) │  │  │  │
-│  │  │  └──────────┘  └──────────────┘  └─────────────┘  │  │  │
-│  │  └────────────────────────────────────────────────────┘  │  │
-│  └──────────────────────────────┬───────────────────────────┘  │
-│                                 ↓                               │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │                  XAI Explainability Layer                │  │
-│  │  • SHAP values per decision         • NLP audit reports  │  │
-│  │  • Feature attribution (top 5)      • Medical alert ctx  │  │
-│  │  • Proactive vs reactive analysis                        │  │
-│  └──────────────────────────────┬───────────────────────────┘  │
-│                                 ↓                               │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │           User Equipment (UE) — Patient Wearable         │  │
-│  │   📱 HR, BP, SpO₂ sensors → LSTM signal history buffer   │  │
-│  │   → Linear / Random / Custom mobility patterns           │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │                    KPI Evaluation Layer                  │  │
-│  │  • HFR  • CDP  • Packets Lost  • Proactive Handover Rate │  │
-│  │  • ML Confidence Score  • XAI Explanation Quality        │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
+╔══════════════════════════════════════════════════════════════════════╗
+║  XAI HANDOVER DECISION REPORT — Step 147                            ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  UE 0  |  From: BS2 → To: BS3           Model Confidence: 94.3%     ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  DECISION RATIONALE                                                  ║
+║  ▶ Target BS3 RSSI (0.02341) is improving (+0.00031/step).          ║
+║  ▶ Current BS2 RSSI was 0.00912 (declining trend).                  ║
+║  ▶ BS3 load is 0.23 (optimal capacity available).                    ║
+║  ▶ Distance to BS3: 47.3m                                            ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  TOP SHAP CONTRIBUTING FEATURES                                      ║
+║  • BS3_rssi_trend      : +0.01823  [↑ Favors Handover]               ║
+║  • BS2_rssi_avg        : -0.01204  [↓ Opposes Handover]              ║
+║  • BS3_load            : +0.00891  [↑ Favors Handover]               ║
+║  • BS3_inv_dist        : +0.00654  [↑ Favors Handover]               ║
+║  • velocity_x          : +0.00312  [↑ Favors Handover]               ║
+╚══════════════════════════════════════════════════════════════════════╝
+```
+
+<p align="center">
+  <img src="docs/images/xai_shap_attributions.png" width="48%" alt="XAI SHAP Feature Attributions" />
+  <img src="docs/images/patient_vitals_timeline.png" width="48%" alt="Patient Vitals Timeline" />
+</p>
+
+---
+
+## 🚀 Proactive vs. Reactive Handover Lead-Time Analysis
+
+Static rule-based algorithms suffer from **decision lag**, triggering handovers only after RSSI drops below drop thresholds. The BiLSTM model provides a **5 to 15 step lead-time advantage**, initiating cell transfer while signal quality is still high.
+
+![Proactive vs Reactive Analysis](docs/images/proactive_vs_reactive.png)
+
+---
+
+## 🖥️ Full Stack Application Architecture
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                      Cellular Networks Architecture                    │
+│                                                                        │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │           Vite + React 18 2D Web Dashboard (Port 3000)          │  │
+│  │  • HTML5 Canvas 60 FPS Network Renderer  • Real-Time KPI Panels  │  │
+│  │  • Live SHAP XAI Explanations            • Algorithm Compare Bar │  │
+│  └──────────────────────────────────┬───────────────────────────────┘  │
+│                                     │ HTTP REST API / JSON             │
+│                                     ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │               Python 3.12 Flask REST Server (Port 5000)          │  │
+│  │  • `/api/status`     • `/api/step`       • `/api/batch_step`     │  │
+│  │  • `/api/reset`      • `/api/benchmark`                             │  │
+│  └──────────────────────────────────┬───────────────────────────────┘  │
+│                                     │                                  │
+│                                     ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │                   ML Model & Simulation Engines                  │  │
+│  │  ┌─────────────────┐  ┌──────────────────┐  ┌─────────────────┐  │  │
+│  │  │  BiLSTM Model   │  │  Random Forest   │  │  DQN RL Agent   │  │  │
+│  │  │ (TensorFlow/h5) │  │  (scikit-learn)  │  │ (Reward Policy) │  │  │
+│  │  └─────────────────┘  └──────────────────┘  └─────────────────┘  │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## ⚙️ Simulation Parameters
+## 🌐 Flask REST API Endpoint Reference
 
-### Static Algorithm Parameters (unchanged)
-
-| Parameter | Value | Purpose |
-| :--- | :--- | :--- |
-| **Hysteresis Margin** | 5% (0.05) | Prevents ping-pong effect |
-| **Signal Threshold** | 0.3 | Minimum acceptable signal strength |
-| **Cost Penalty** | 50 units | Discourages unnecessary switching |
-| **Signal Fluctuation** | $\mathcal{N}(0, 0.002)$ | Environmental noise |
-
-### ML Model Hyperparameters
-
-| Model | Key Parameters |
-| :--- | :--- |
-| **LSTM** | 2× BiLSTM (128→64 units), window=10 steps, Adam lr=1e-3, EarlyStopping |
-| **Random Forest** | 200 estimators, max_depth=15, balanced class weights |
-| **DQN** | γ=0.95, ε-greedy decay=0.995→0.05, replay buffer=20k, target network update=100 steps |
-
-### LSTM Feature Engineering
-
-Each timestep builds a `(window_size=10, 2×N_BS)` sequence:
-
-```text
-For each Base Station:
-  [RSSI_t-9..t, Load_t-9..t]
-```
-
-Flat feature vector (for RF/DQN):
-```text
-Per BS: [rssi_now, rssi_avg(window), rssi_trend_slope, load_now, 1/distance]
-Global: [velocity_x, velocity_y, handover_count]
-```
+| Endpoint | Method | Payload | Description |
+| :--- | :---: | :--- | :--- |
+| `/api/status` | `GET` | None | Returns backend status, TensorFlow/SHAP availability, model accuracies, and dataset samples ($15,200$). |
+| `/api/benchmark` | `GET` | None | Returns official Section 8 notebook benchmark KPI metrics for all 6 algorithms. |
+| `/api/step` | `POST` | `{"algo": "lstm"}` | Advances specified algorithm simulation by 1 step in Python; returns updated stations, UEs, KPIs, and XAI events. |
+| `/api/batch_step` | `POST` | None | Advances all 6 algorithms simultaneously in a single pass in $< 5\text{ms}$. |
+| `/api/reset` | `POST` | `{"algo": "rf", "seed": 42}` | Resets specified algorithm simulation state with given random seed. |
 
 ---
 
-## 📂 Project Structure
+## 📂 Project File Structure
 
 ```text
 cellular-networks-architecture/
-├── dashboard/                             # 🌐 Interactive Vite + React 2D Web App
+├── dashboard/                             # 🌐 Interactive Vite + React 2D Web Dashboard
 │   ├── src/
-│   │   ├── components/                    # Canvas, KPI, XAI, Compare UI components
-│   │   ├── simulation.js                  # Pure-JS 60 FPS simulation engine
-│   │   └── App.jsx                        # Main React application
-│   └── package.json                       # Dependencies
-├── notebooks/                             # 🧠 Simulation notebooks
-│   ├── 4G_Handover_Simulation.ipynb       # Original static algorithm simulation
-│   └── 4G_Handover_ML.ipynb              # 🆕 ML + XAI enhanced simulation
-├── models/                                # 💾 Saved TensorFlow & RF model weights
-│   ├── lstm_model.h5
-│   ├── rf_model.joblib
-│   └── rf_scaler.joblib
-├── docs/                                  # 📋 Documentation & reports
-│   ├── simulation_report.docx             # Technical report (Greek)
-│   └── simulation_presentation.pptx       # Summary presentation (Greek)
-├── map/                                   # 🗺️ Geospatial visualization
-│   ├── sim.py                             # OSMnx + Folium map generator
-│   ├── ue_bs_custom_icon_map.html         # Interactive handover map
-│   └── *.svg                             # Custom UE/BS icons
-├── server.py                              # 🐍 Python Flask REST API server
-├── README.md                              # This file
-├── LICENSE                                # MIT License
-└── .gitignore
+│   │   ├── components/                    # NetworkCanvas, KPIPanel, XAIPanel, CompareBar, AlgoSelector
+│   │   ├── simulation.js                  # Pure JS 60 FPS fallback simulation engine & benchmark metadata
+│   │   ├── App.jsx                        # Main React application shell
+│   │   └── index.css                      # Modern dark-mode glassmorphism stylesheet
+│   └── package.json                       # Frontend dependencies (React 18, Vite 5)
+├── notebooks/                             # 🧠 Jupyter Notebook Simulations
+│   ├── 4G_Handover_Simulation.ipynb       # Classical static handover notebook (RSSI, Threshold, Cost)
+│   └── 4G_Handover_ML.ipynb              # 🆕 ML + XAI enhanced notebook (13 Sections, BiLSTM, RF, DQN)
+├── models/                                # 💾 Saved Trained Machine Learning Weights
+│   ├── lstm_model.h5                      # Saved Keras TensorFlow BiLSTM weights
+│   ├── rf_model.joblib                    # Saved Scikit-Learn Random Forest model
+│   └── rf_scaler.joblib                   # Saved StandardScaler preprocessor
+├── docs/                                  # 📋 Documentation Assets & Generated Plots
+│   └── images/                            # Extracted plot PNG images used in README
+├── server.py                              # 🐍 Flask Python ML REST API server
+├── README.md                              # Comprehensive analytical project documentation
+└── LICENSE                                # MIT License
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start Guide
 
-### 1. Clone & Install
+### 1. Prerequisites & Environment Setup
+
+Ensure Python 3.9+ and Node.js 18+ are installed on your machine.
 
 ```bash
 git clone https://github.com/FilippeZ/cellular-networks-architecture.git
 cd cellular-networks-architecture
-pip install jupyter numpy matplotlib pandas scikit-learn seaborn
-# For LSTM support:
-pip install tensorflow
-# For XAI:
-pip install shap
+
+# Install Python dependencies
+pip install jupyter numpy matplotlib pandas scikit-learn seaborn tensorflow shap flask flask-cors
 ```
 
-### 2. Run the Original Simulation (Static Algorithms)
-
-```bash
-jupyter notebook notebooks/4G_Handover_Simulation.ipynb
-```
-
-### 3. Run the Intelligent ML Simulation (New)
+### 2. Run the Intelligent ML Jupyter Notebook
 
 ```bash
 jupyter notebook notebooks/4G_Handover_ML.ipynb
 ```
 
-Execute cells sequentially to:
+Execute cells sequentially to walk through training data generation, model training, Section 8 comparative simulation runs, and XAI clinical report generation.
 
-| Section | What Happens |
-| :--- | :--- |
-| **1 — Setup** | Imports, config, global style system |
-| **2 — Network Model** | Enhanced `BaseStation`, `UE`, `Network` classes with signal history buffers |
-| **3 — Data Generation** | Oracle (cost-based) simulation generates `(features, label)` training dataset |
-| **4 — Random Forest** | Train RF classifier; plot confusion matrix + feature importance |
-| **5 — LSTM** | Build & train Bidirectional LSTM; plot training curves |
-| **6 — DQN** | Train DQN agent with healthcare-shaped rewards; plot episode rewards |
-| **7 — ML Wrappers** | Plug ML models into simulation interface |
-| **8 — Comparative Run** | Run all 6 algorithms on same topology |
-| **9 — KPI Dashboard** | Side-by-side dashboard: HFR, CDP, packets lost, radar chart |
-| **10 — XAI Engine** | SHAP explainer, NLP report generator, vitals timeline plotter |
-| **11 — XAI Simulation** | Instrumented run with live XAI explanations + clinical audit |
-| **12 — Proactive Analysis** | Quantify ML lead-time advantage over reactive static methods |
-| **13 — Summary** | Final KPIs, clinical recommendations |
+### 3. Launch Python Backend & React Web Dashboard
 
-### 4. Run the Interactive Web Dashboard (React)
+In Terminal 1 (Python REST Server):
+```bash
+python server.py
+```
 
+In Terminal 2 (Vite React Web Dashboard):
 ```bash
 cd dashboard
 npm install
 npm run dev
 ```
-Open **[http://localhost:3000/](http://localhost:3000/)** in your browser.
 
----
-
-## 📊 Key Performance Indicators (KPIs)
-
-| KPI | What It Measures | Why It Matters |
-| :--- | :--- | :--- |
-| **Handover Failure Rate (HFR)** | % of handovers resulting in data loss | Direct connectivity gap indicator |
-| **Call Dropping Probability (CDP)** | Probability of losing an active session | Critical for real-time health telemetry |
-| **Packets Lost** | Actual data frames dropped during handover | Zero-tolerance metric for vital signs |
-| **Proactive Handover Rate** | % of handovers triggered before signal drop | Key ML advantage metric |
-| **ML Confidence Score** | Model's probability for chosen BS | XAI quality gate (< 60% → flag for review) |
-| **Ping-Pong Count** | Rapid back-and-forth handovers | Algorithm stability |
-
----
-
-## 🔬 Algorithm Deep Dive
-
-### Static Baselines
-
-#### 📶 RSSI-based Handover
-Continuously monitors RSSI from all BSes. Triggers handover when a neighbor exceeds current RSSI by 5% hysteresis margin. **Reactive** — decision made at time of signal drop.
-
-#### 📊 Threshold-based Handover
-Maintains connection until signal drops below 0.3 threshold. Minimizes unnecessary handovers but may keep a degrading connection longer than optimal.
-
-#### 💰 Cost-based Handover
-Minimizes a composite cost: `cost = (distance × load × 10) / (signal + 1) + switching_penalty`. Load-aware but still **reactive**.
-
----
-
-### ML Models
-
-#### 🔮 LSTM Predictive Handover
-```
-Input: 10-step sliding window of [RSSI_BS0, Load_BS0, ..., RSSI_BSN, Load_BSN]
-Model: BiLSTM(128) → BiLSTM(64) → Dense(64) → Softmax(N_BS)
-Output: P(best_BS | signal_trajectory) → proactive handover decision
-```
-By learning the *trajectory* of signal degradation, the LSTM predicts which BS will be optimal **in the future**, allowing handover before any packet loss risk.
-
-#### 🌲 Random Forest Handover Classifier
-Trained on oracle-labeled data. Each decision is backed by **feature importances**: "BS2 was chosen because its RSSI trend slope was +0.003/step while current BS0 slope was -0.008/step and load dropped to 0.24."
-
-#### 🎮 DQN Reinforcement Learning Handover
-**Reward function** designed for healthcare IoT:
-```python
-reward = +2.0   # signal > threshold → stable
-reward += -5.0  # signal < 0.01 → data loss risk
-reward += -1.0  # unnecessary switch → ping-pong penalty
-reward += +1.0  # patient has active alert → prioritize stability
-reward += -0.5 × load  # prefer less-loaded cells
-```
-The agent progressively improves its policy through thousands of environment interactions, outperforming static rules without any manual tuning.
-
----
-
-## 🔍 Explainable AI (XAI) Layer
-
-### Why XAI in Healthcare?
-
-> IEC 62304 (medical device software lifecycle) and FDA SaMD guidance require that AI/ML-based decisions in clinical systems be **auditable, traceable, and explainable**.
-
-The XAI layer generates a **clinical audit report** for every handover decision:
-
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  XAI HANDOVER DECISION REPORT — Step  147                        ║
-╠══════════════════════════════════════════════════════════════════╣
-║  UE  0  |  From: BS2 → To: BS3     Model Confidence: 91.3%      ║
-╠══════════════════════════════════════════════════════════════════╣
-║  DECISION RATIONALE                                              ║
-╠══════════════════════════════════════════════════════════════════╣
-  ▶ Target BS3 signal (RSSI=0.02341) is improving (+0.00031/step).
-  ▶ Current BS2 RSSI was 0.00912 (declining trend).
-  ▶ BS3 network load is 0.23 (lower is better).
-  ▶ Distance to BS3: 47.3m
-╠══════════════════════════════════════════════════════════════════╣
-║  TOP CONTRIBUTING FEATURES (SHAP)                                ║
-╠══════════════════════════════════════════════════════════════════╣
-  • BS3_rssi_trend             : +0.01823  ↑ pushes TO handover
-  • BS2_rssi_avg               : -0.01204  ↓ pushes AGAINST handover
-  • BS3_load                   : +0.00891  ↑ pushes TO handover
-  • BS3_inv_dist               : +0.00654  ↑ pushes TO handover
-  • velocity_x                 : +0.00312  ↑ pushes TO handover
-╚══════════════════════════════════════════════════════════════════╝
-```
-
-### XAI Components
-
-| Component | Technology | Output |
-| :--- | :--- | :--- |
-| **Global Feature Importance** | SHAP TreeExplainer | Bar chart of mean \|SHAP\| per feature |
-| **Local Decision Explanation** | SHAP + RF feature importance | Per-handover top-5 features |
-| **NLP Clinical Report** | Template + SHAP values | Plain-English audit entry |
-| **Medical Alert Context** | Vital sign thresholds + signal | Alert-aware explanation |
-| **Vitals + Handover Timeline** | Matplotlib + event markers | Clinical monitoring dashboard |
-
----
-
-## 🏥 Healthcare Application Context
-
-A patient with wearable biosensors (HR, BP, SpO₂) moves through a 4G coverage area. The **ML system** guarantees:
-
-- ✅ **Zero data loss** — LSTM triggers handover before signal reaches the drop threshold
-- ✅ **Proactive decisions** — system acts 5–15 steps *before* RSSI/Threshold would react
-- ✅ **Explainability** — every decision is logged with clinical-grade explanation
-- ✅ **Medical alert awareness** — DQN reward shaping prioritizes connectivity during active patient alerts
-- ✅ **Load balancing** — all ML models consider BS load to prevent congestion during mass events
-
----
-
-## 🛠️ Technologies
-
-| Component | Technology |
-| :--- | :--- |
-| **Language** | Python 3.9+, JavaScript (ES6+) |
-| **Web App** | Vite, React 18, HTML5 Canvas, Vanilla CSS |
-| **Backend Server** | Flask 3.1, Flask-CORS |
-| **Simulation** | Jupyter Notebook |
-| **Computation** | NumPy, Pandas |
-| **Visualization** | Matplotlib, Seaborn |
-| **ML — Classical** | scikit-learn (RandomForest, GBM, StandardScaler) |
-| **ML — Deep Learning** | TensorFlow/Keras (BiLSTM, DQN, BatchNorm) |
-| **XAI** | SHAP (TreeExplainer, summary plots) |
-| **Geospatial** | OSMnx, NetworkX, Folium |
-| **Network Model** | Custom OOP (BaseStation, UE, Network) |
-| **Signal Model** | Euclidean distance + Gaussian noise |
+Open **[http://localhost:3000/](http://localhost:3000/)** in your browser to explore the live interactive 60 FPS 2D canvas simulation.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+This project is open-source and licensed under the **MIT License** — see [LICENSE](LICENSE) for full details.
 
 ## 👤 Author
 
 **Filippos-Paraskevas Zygouris**  
-[GitHub](https://github.com/FilippeZ) | University of Patras — Department of Computer Engineering & Informatics
+[GitHub Profile](https://github.com/FilippeZ) | Department of Computer Engineering & Informatics, University of Patras
